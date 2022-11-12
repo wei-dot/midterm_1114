@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Midterm App',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -50,7 +51,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int index = 0;
-  List<String> imgUrl = [
+  final List<String> imgUrl = [
     'https://truth.bahamut.com.tw/s01/202203/332a033ace292f586d829746954de29f.JPG',
     'https://megapx.dcard.tw/v1/images/4feeea03-5b42-4b95-bdd6-a6798b0813c0/responsive?width=640',
     'https://megapx.dcard.tw/v1/images/5a82dee3-690c-470f-8057-575391afc169/responsive?width=640',
@@ -66,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Image.network(
         'https://megapx.dcard.tw/v1/images/daeb3e12-75f4-4884-9996-6677a24285cb/responsive?width=640')
   ];
+  final CarouselController _controller = CarouselController();
 
   @override
   Widget build(BuildContext context) {
@@ -81,87 +83,78 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            '這是第 ${index + 1} 張圖片',
+            style: Theme.of(context).textTheme.headline4,
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          GestureDetector(
+            onTap: () {
+              final snackBar = SnackBar(
+                /// need to set following properties for best effect of awesome_snackbar_content
+                elevation: 0,
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                content: AwesomeSnackbarContent(
+                  title: '照片連結',
+                  message: imgUrl[index],
 
-          children: <Widget>[
-            SizedBox(
-              width: 300,
-              height: 300,
-              child: GestureDetector(
-                onTap: () {
-                  final snackBar = SnackBar(
-                    /// need to set following properties for best effect of awesome_snackbar_content
-                    elevation: 0,
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.transparent,
-                    content: AwesomeSnackbarContent(
-                      title: '照片連結',
-                      message: imgUrl[index],
+                  /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                  contentType: ContentType.success,
+                ),
+              );
 
-                      /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
-                      contentType: ContentType.success,
-                    ),
-                  );
-
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(snackBar);
-                },
-                child: _imgList[index],
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(snackBar);
+            },
+            child: CarouselSlider(
+              items: _imgList,
+              options: CarouselOptions(
+                  enlargeCenterPage: true,
+                  height: 300,
+                  initialPage: 0,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      this.index = index;
+                    });
+                  }),
+              carouselController: _controller,
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Flexible(
+                child: ElevatedButton(
+                  onPressed: () => _controller.previousPage(),
+                  child: const Text(
+                    '上一頁',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 100,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (index == 0) {
-                        index = _imgList.length - 1;
-                      } else {
-                        index--;
-                      }
-                    });
-                  },
-                  child: const Text('上一張'),
+              Flexible(
+                child: ElevatedButton(
+                  onPressed: () => _controller.nextPage(),
+                  child: const Text(
+                    '下一頁',
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (index < _imgList.length - 1) {
-                        index++;
-                      } else {
-                        index = 0;
-                      }
-                    });
-                  },
-                  child: const Text('下一張'),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

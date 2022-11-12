@@ -2,15 +2,11 @@
 
 Midterm Project
 
-## Getting Started
+期中實作題目
 
-This project is a starting point for a Flutter application.
+##添加功能
 
-A few resources to get you started if this is your first Flutter project:
+1. 兩按鈕切換照片
+2. 照片滑動(ImageSlideShow，支持無限循環)
+3. 點擊圖片出現圖片連結SnackBar
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
