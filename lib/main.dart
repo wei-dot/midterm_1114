@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,9 +23,9 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.brown,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: '期中實作'),
     );
   }
 }
@@ -48,18 +49,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  int index = 0;
+  List<String> imgUrl = [
+    'https://truth.bahamut.com.tw/s01/202203/332a033ace292f586d829746954de29f.JPG',
+    'https://megapx.dcard.tw/v1/images/4feeea03-5b42-4b95-bdd6-a6798b0813c0/responsive?width=640',
+    'https://megapx.dcard.tw/v1/images/5a82dee3-690c-470f-8057-575391afc169/responsive?width=640',
+    'https://megapx.dcard.tw/v1/images/daeb3e12-75f4-4884-9996-6677a24285cb/responsive?width=640'
+  ];
+  final _imgList = [
+    Image.network(
+        'https://truth.bahamut.com.tw/s01/202203/332a033ace292f586d829746954de29f.JPG'),
+    Image.network(
+        'https://megapx.dcard.tw/v1/images/4feeea03-5b42-4b95-bdd6-a6798b0813c0/responsive?width=640'),
+    Image.network(
+        'https://megapx.dcard.tw/v1/images/5a82dee3-690c-470f-8057-575391afc169/responsive?width=640'),
+    Image.network(
+        'https://megapx.dcard.tw/v1/images/daeb3e12-75f4-4884-9996-6677a24285cb/responsive?width=640')
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -94,22 +100,69 @@ class _MyHomePageState extends State<MyHomePage> {
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
+
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            SizedBox(
+              width: 300,
+              height: 300,
+              child: GestureDetector(
+                onTap: () {
+                  final snackBar = SnackBar(
+                    /// need to set following properties for best effect of awesome_snackbar_content
+                    elevation: 0,
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: Colors.transparent,
+                    content: AwesomeSnackbarContent(
+                      title: '照片連結',
+                      message: imgUrl[index],
+
+                      /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                      contentType: ContentType.success,
+                    ),
+                  );
+
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(snackBar);
+                },
+                child: _imgList[index],
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            const SizedBox(
+              height: 100,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      if (index == 0) {
+                        index = _imgList.length - 1;
+                      } else {
+                        index--;
+                      }
+                    });
+                  },
+                  child: const Text('上一張'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      if (index < _imgList.length - 1) {
+                        index++;
+                      } else {
+                        index = 0;
+                      }
+                    });
+                  },
+                  child: const Text('下一張'),
+                ),
+              ],
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
