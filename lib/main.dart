@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,6 +13,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+      statusBarIconBrightness: Brightness.dark,
+    ));
     return MaterialApp(
       title: 'Midterm App',
       theme: ThemeData(
@@ -24,7 +29,20 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.brown,
+        scaffoldBackgroundColor: const Color(0xFFD8D8D8),
+        appBarTheme: const AppBarTheme(
+          backgroundColor:  Color(0xFFD8D8D8),
+          shadowColor: Colors.transparent,
+          toolbarHeight: 100,
+          centerTitle: true,
+          iconTheme: IconThemeData(color: Colors.black),
+          titleTextStyle: TextStyle(color: Colors.black54,fontSize: 40),
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Color(0xFFD8D8D8),
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.dark,
+          ),
+        ),
       ),
       home: const MyHomePage(title: '期中實作'),
     );
@@ -120,6 +138,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   enlargeCenterPage: true,
                   height: 300,
                   initialPage: 0,
+                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enableInfiniteScroll: true,
+                  autoPlay: true,
                   onPageChanged: (index, reason) {
                     setState(() {
                       this.index = index;
