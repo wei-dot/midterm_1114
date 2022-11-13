@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Midterm App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -24,7 +26,8 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.brown,
+        primarySwatch: Colors.grey,
+        scaffoldBackgroundColor: const Color(0xFFD8D8D8),
       ),
       home: const MyHomePage(title: '期中實作'),
     );
@@ -87,12 +90,20 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Text(
-            '這是第 ${index + 1} 張圖片',
-            style: Theme.of(context).textTheme.headline4,
-          ),
           const SizedBox(
             height: 30,
+          ),
+          NeumorphicText(
+            '這是第${index + 1}張圖片',
+            style: const NeumorphicStyle(
+              color:  Colors.black26,
+              depth: 4,
+              lightSource: LightSource.topLeft,
+            ),
+            textStyle: NeumorphicTextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           GestureDetector(
             onTap: () {
@@ -120,6 +131,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   enlargeCenterPage: true,
                   height: 300,
                   initialPage: 0,
+                  autoPlay: true,
+                  enableInfiniteScroll: true,
+                  autoPlayInterval: const Duration(seconds: 3),
+                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
                   onPageChanged: (index, reason) {
                     setState(() {
                       this.index = index;
@@ -135,27 +151,61 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Flexible(
-                child: ElevatedButton(
-                  onPressed: () => _controller.previousPage(),
-                  child: const Text(
-                    '上一頁',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
+                child: NeumorphicButton(
+                    margin: const EdgeInsets.only(top: 12),
+                    onPressed: () {
+                      _controller.previousPage();
+                    },
+                    style: NeumorphicStyle(
+                        shape: NeumorphicShape.convex,
+                        boxShape: NeumorphicBoxShape.roundRect(
+                            BorderRadius.circular(12)),
+                        depth: 8,
+                        color: const Color(0x4DD8D8D8),
+                        lightSource: LightSource.topLeft,
+                        intensity: 0.7,
+                        surfaceIntensity: 0.3),
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      "上一頁",
+                      style:
+                          TextStyle(fontSize: 20, color: _textColor(context)),
+                    )),
               ),
               Flexible(
-                child: ElevatedButton(
-                  onPressed: () => _controller.nextPage(),
-                  child: const Text(
-                    '下一頁',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
+                child: NeumorphicButton(
+                    margin: const EdgeInsets.only(top: 12),
+                    onPressed: () {
+                      _controller.previousPage();
+                    },
+                    style: NeumorphicStyle(
+                        shape: NeumorphicShape.convex,
+                        boxShape: NeumorphicBoxShape.roundRect(
+                            BorderRadius.circular(8)),
+                        depth: 8,
+                        color: const Color(0x4DD8D8D8),
+                        lightSource: LightSource.topLeft,
+                        intensity: 0.7,
+                        surfaceIntensity: 0.3),
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      "下一頁",
+                      style:
+                          TextStyle(fontSize: 20, color: _textColor(context)),
+                    )),
               ),
             ],
           )
         ],
       ),
     );
+  }
+}
+
+Color _textColor(BuildContext context) {
+  if (NeumorphicTheme.isUsingDark(context)) {
+    return Colors.white;
+  } else {
+    return Colors.black;
   }
 }
