@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,38 +12,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark,
-    ));
-    return MaterialApp(
+    return const NeumorphicApp(
+      debugShowCheckedModeBanner: false,
       title: 'Midterm App',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        scaffoldBackgroundColor: const Color(0xFFD8D8D8),
-        appBarTheme: const AppBarTheme(
-          backgroundColor:  Color(0xFFD8D8D8),
-          shadowColor: Colors.transparent,
-          toolbarHeight: 100,
-          centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(color: Colors.black54,fontSize: 40),
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: Color(0xFFD8D8D8),
-            statusBarIconBrightness: Brightness.dark,
-            statusBarBrightness: Brightness.dark,
-          ),
-        ),
+      themeMode: ThemeMode.light,
+      theme: NeumorphicThemeData(
+        baseColor: Color(0xFFD8D8D8),
+        lightSource: LightSource.topLeft,
+        depth: 10,
       ),
-      home: const MyHomePage(title: '期中實作'),
+      darkTheme: NeumorphicThemeData(
+        baseColor: Color(0xFF3E3E3E),
+        lightSource: LightSource.topLeft,
+        depth: 6,
+      ),
+      home: MyHomePage(title: 'Midterm Practice'),
     );
   }
 }
@@ -69,9 +51,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int index = 0;
+  String mode = 'Dark Mode';
   final List<String> imgUrl = [
     'https://truth.bahamut.com.tw/s01/202203/332a033ace292f586d829746954de29f.JPG',
-    'https://megapx.dcard.tw/v1/images/4feeea03-5b42-4b95-bdd6-a6798b0813c0/responsive?width=640',
+    'https://megapx-assets.dcard.tw/images/72652fe7-a112-4659-b0fc-ce2d4b8e29ea/1280.jpeg',
     'https://megapx.dcard.tw/v1/images/5a82dee3-690c-470f-8057-575391afc169/responsive?width=640',
     'https://megapx.dcard.tw/v1/images/daeb3e12-75f4-4884-9996-6677a24285cb/responsive?width=640'
   ];
@@ -79,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Image.network(
         'https://truth.bahamut.com.tw/s01/202203/332a033ace292f586d829746954de29f.JPG'),
     Image.network(
-        'https://megapx.dcard.tw/v1/images/4feeea03-5b42-4b95-bdd6-a6798b0813c0/responsive?width=640'),
+        'https://megapx-assets.dcard.tw/images/72652fe7-a112-4659-b0fc-ce2d4b8e29ea/1280.jpeg'),
     Image.network(
         'https://megapx.dcard.tw/v1/images/5a82dee3-690c-470f-8057-575391afc169/responsive?width=640'),
     Image.network(
@@ -96,18 +79,36 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor: NeumorphicTheme.baseColor(context),
+      appBar: NeumorphicAppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        centerTitle: true,
+        title: NeumorphicText(
+          widget.title,
+          style: NeumorphicStyle(color: _textColor(context)),
+          textStyle: NeumorphicTextStyle(
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Text(
-            '這是第 ${index + 1} 張圖片',
-            style: Theme.of(context).textTheme.headline4,
+          NeumorphicText(
+            'This is  picture ${index + 1}',
+            style: NeumorphicStyle(
+              color: _textColor(context),
+              shape: NeumorphicShape.flat,
+              boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(8)),
+              depth: 4,
+              lightSource: LightSource.topLeft,
+            ),
+            textStyle: NeumorphicTextStyle(
+              fontSize: 30,
+            ),
           ),
           const SizedBox(
             height: 30,
@@ -120,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: Colors.transparent,
                 content: AwesomeSnackbarContent(
-                  title: '照片連結',
+                  title: 'Picture SourceLink',
                   message: imgUrl[index],
 
                   /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
@@ -157,27 +158,88 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Flexible(
-                child: ElevatedButton(
-                  onPressed: () => _controller.previousPage(),
-                  child: const Text(
-                    '上一頁',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
+                child: NeumorphicButton(
+                    margin: const EdgeInsets.only(top: 12),
+                    onPressed: () {
+                      _controller.previousPage();
+                    },
+                    style: NeumorphicStyle(
+                      shape: NeumorphicShape.flat,
+                      boxShape: NeumorphicBoxShape.roundRect(
+                          BorderRadius.circular(8)),
+                      depth: 7,
+                      intensity: 0.5,
+                      lightSource: LightSource.topLeft,
+                    ),
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      "Previous",
+                      style:
+                          TextStyle(color: _textColor(context), fontSize: 20),
+                    )),
               ),
               Flexible(
-                child: ElevatedButton(
-                  onPressed: () => _controller.nextPage(),
-                  child: const Text(
-                    '下一頁',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
+                child: NeumorphicButton(
+                    margin: const EdgeInsets.only(top: 12),
+                    onPressed: () {
+                      // NeumorphicTheme.of(context)?.themeMode
+                      if (NeumorphicTheme.isUsingDark(context)) {
+                        NeumorphicTheme.of(context)?.themeMode =
+                            ThemeMode.light;
+                        mode = 'Dark Mode';
+                      } else {
+                        NeumorphicTheme.of(context)?.themeMode = ThemeMode.dark;
+                        mode = 'Light Mode';
+                      }
+                    },
+                    style: NeumorphicStyle(
+                      shape: NeumorphicShape.flat,
+                      boxShape: NeumorphicBoxShape.roundRect(
+                          BorderRadius.circular(8)),
+                      depth: 7,
+                      intensity: 0.5,
+                      lightSource: LightSource.topLeft,
+                    ),
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      mode,
+                      style:
+                          TextStyle(color: _textColor(context), fontSize: 20),
+                    )),
+              ),
+              Flexible(
+                child: NeumorphicButton(
+                    margin: const EdgeInsets.only(top: 12),
+                    onPressed: () {
+                      _controller.nextPage();
+                    },
+                    style: NeumorphicStyle(
+                      shape: NeumorphicShape.flat,
+                      boxShape: NeumorphicBoxShape.roundRect(
+                          BorderRadius.circular(8)),
+                      depth: 7,
+                      lightSource: LightSource.topLeft,
+                      intensity: 0.5,
+                    ),
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      "Next",
+                      style:
+                          TextStyle(color: _textColor(context), fontSize: 20),
+                    )),
               ),
             ],
           )
         ],
       ),
     );
+  }
+}
+
+Color _textColor(BuildContext context) {
+  if (NeumorphicTheme.isUsingDark(context)) {
+    return Colors.white54;
+  } else {
+    return Colors.black54;
   }
 }
