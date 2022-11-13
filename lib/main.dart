@@ -92,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        color: NeumorphicTheme.baseColor(context),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
