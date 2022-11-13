@@ -1,6 +1,7 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:splash_screen_view/SplashScreenView.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,21 +13,30 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const NeumorphicApp(
+    Widget example1 = SplashScreenView(
+      duration: 3000,
+      text: "Midterm Practice",
+      textType: TextType.TyperAnimatedText,
+      textStyle: const TextStyle(
+        fontSize: 40.0,
+      ),
+      backgroundColor: Colors.white, navigateRoute: const MyHomePage(title: 'Midterm Practice'),
+    );
+    return NeumorphicApp(
       debugShowCheckedModeBanner: false,
       title: 'Midterm App',
       themeMode: ThemeMode.light,
-      theme: NeumorphicThemeData(
+      theme: const NeumorphicThemeData(
         baseColor: Color(0xFFD8D8D8),
         lightSource: LightSource.topLeft,
         depth: 10,
       ),
-      darkTheme: NeumorphicThemeData(
+      darkTheme: const NeumorphicThemeData(
         baseColor: Color(0xFF3E3E3E),
         lightSource: LightSource.topLeft,
         depth: 6,
       ),
-      home: MyHomePage(title: 'Midterm Practice'),
+      home: example1,
     );
   }
 }
